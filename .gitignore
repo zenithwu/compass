@@ -2,3 +2,7 @@
 *.iml
 venv/
 compass/data
+build
+project.egg-info
+setup.py
+

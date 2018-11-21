@@ -18,7 +18,7 @@ class JsonLinesExporterPipeline:
         # 初始化 exporter 实例，执行输出的文件和编码
         data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
         if not os.path.exists(data_path):
-            os.mkdir(data_path)
+            os.makedirs(data_path)
         self.file = open(os.path.join(data_path, spider.name + '.json'), 'wb')
         self.exporter = JsonLinesItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
 
