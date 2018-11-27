@@ -60,3 +60,4 @@ class FlightItem(scrapy.Item):
     end_time=scrapy.Field()
     end_position=scrapy.Field()
     status=scrapy.Field()
+    stat_date=scrapy.Field()

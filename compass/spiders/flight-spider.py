@@ -4,8 +4,7 @@ import time
 
 import scrapy
 
-from compass.items import PriceItem, FlightItem
-from scrapy import Selector
+from compass.items import FlightItem
 
 
 class FlightSpider(scrapy.Spider):
@@ -18,14 +17,17 @@ class FlightSpider(scrapy.Spider):
     custom_settings = {
         'ITEM_PIPELINES': {
             'compass.pipelines.JsonLinesExporterPipeline': 1
-        }
+        },
+        'DOWNLOAD_DELAY':10
     }
 
+
     def parse(self, response):
+        now=time.strftime('%Y%m%d', time.localtime())
         for info in response.xpath('//div[@class="innerRow"]//a'):
-            url=info.xpath("@href").extract_first()
+            url=info.xpath("@href").extract_first()+"&fdate="+now
             position=info.xpath("text()").extract_first()
-            yield scrapy.Request(url=response.urljoin(url), meta={"position": position},callback=self.parse_list)
+            yield scrapy.Request(url=response.urljoin(url), meta={"position": position,"stat_date":now},callback=self.parse_list)
 
 
 
@@ -44,6 +46,7 @@ class FlightSpider(scrapy.Spider):
             item['end_time']=info.xpath("span[5]/text()").extract_first().strip()
             item['end_position']=info.xpath("span[7]/text()").extract_first()
             item['status']=info.xpath("span[9]/text()").extract_first()
+            item['stat_date']=response.meta['stat_date']
             yield item
 
 if __name__ == '__main__':
