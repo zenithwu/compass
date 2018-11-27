@@ -52,17 +52,14 @@ class ProvinceCitySpider(scrapy.Spider):
             else:
                 a_id = type_url.xpath("td/a/text()").extract()[0][0:6]
                 a_name = type_url.xpath("td/a/text()").extract()[1]
-            yield self.parse_data(p_id,p_name,a_id,a_name,c_id,c_name)
-
-    def parse_data(self, p_id,p_name,a_id,a_name,c_id,c_name):
-        item = AreaItem()
-        item['id'] = a_id
-        item['name'] = a_name
-        item['city_id'] = c_id
-        item['city_name'] = c_name
-        item['province_id'] = p_id
-        item['province_name'] = p_name
-        return item
+            item = AreaItem()
+            item['id'] = a_id
+            item['name'] = a_name
+            item['city_id'] = c_id
+            item['city_name'] = c_name
+            item['province_id'] = p_id
+            item['province_name'] = p_name
+            yield item
 
 
 if __name__ == '__main__':

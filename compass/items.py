@@ -48,3 +48,15 @@ class PriceItem(scrapy.Item):
     price=scrapy.Field()
     price_reportime=scrapy.Field()
     company=scrapy.Field()
+
+class FlightItem(scrapy.Item):
+    # define the fields for your item here like:
+    start=scrapy.Field()
+    end=scrapy.Field()
+    info=scrapy.Field()
+    no=scrapy.Field()
+    start_time=scrapy.Field()
+    start_position=scrapy.Field()
+    end_time=scrapy.Field()
+    end_position=scrapy.Field()
+    status=scrapy.Field()

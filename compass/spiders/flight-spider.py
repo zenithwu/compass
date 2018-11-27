@@ -4,14 +4,14 @@ import time
 
 import scrapy
 
-from compass.items import PriceItem
+from compass.items import PriceItem, FlightItem
 from scrapy import Selector
 
 
 class FlightSpider(scrapy.Spider):
     name = 'flight-spider'
     start_urls = [
-        'http://www.variflight.com/flight/fnum/3U3030.html?AE71649A58c77=',
+        'http://www.variflight.com/sitemap/flight?AE71649A58c77=',
     ]
     data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
 
@@ -22,46 +22,29 @@ class FlightSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        type_name = ""
-        # for type_url in response.xpath('//div[@id="sites"]//dl/*/*'):
-        #     n = str(type_url.xpath("text()").extract_first())
-        #     if n is not None:
-        #         if n.find("频道") > -1:
-        #             type_name = n.strip()
-        #         else:
-        #             url = str(type_url.xpath("@href").extract_first()).strip()
-        #             n = n.strip()
-        #             n = n[0:len(n) - 1]
-        #             # print(response.urljoin(url), n, type_name)
-        #             yield scrapy.Request(url=response.urljoin(url), meta={"name": n, "t_name": type_name},
-        #                                  callback=self.parse_price)
+        for info in response.xpath('//div[@class="innerRow"]//a'):
+            url=info.xpath("@href").extract_first()
+            position=info.xpath("text()").extract_first()
+            yield scrapy.Request(url=response.urljoin(url), meta={"position": position},callback=self.parse_list)
 
-    def parse_price(self, response):
-        if len(response.xpath('//table[@class="lp-table"]/tr').extract()) >= 2:
-            item = PriceItem()
-            item['t_name'] = response.meta['t_name']
-            item['name'] = response.meta['name']
-            info = Selector(text=response.xpath('//table[@class="lp-table"]/tr').extract()[1])
-            if len(info.xpath('//td').extract()) < 5:
-                return
-            else:
-                if len(info.xpath('//td').extract()) == 5:
-                    item['price_type'] = info.xpath('//td[3]/text()').extract_first()
-                    item['price'] = info.xpath('//td[4]/text()').extract_first()
-                    item['price_reportime'] = info.xpath('//td[5]/text()').extract_first()
-                    item['company'] = info.xpath('//td[2]/div/text()').extract_first()
-                if len(info.xpath('//td').extract()) == 6:
-                    item['price_type'] = info.xpath('//td[2]/text()').extract_first()
-                    item['price'] = info.xpath('//td[3]/text()').extract_first()
-                    item['price_reportime'] = info.xpath('//td[6]/text()').extract_first()
-                    item['company'] = info.xpath('//td[1]//a/text()').extract_first()
 
-                item['price_type'] = item['price_type'].strip() if item['price_type'] is not None else None
-                item['price_reportime'] = item['price_reportime'].strip() if item['price_reportime'] is not None else None
 
-                item['company'] = item['company'].strip() if item['company'] is not None else None
-                return item
-
+    def parse_list(self, response):
+        print("---")
+        for info in response.xpath('//div[@class="li_com"]'):
+            item=FlightItem()
+            position=response.meta['position']
+            if position is not None and str(position).find('-')>-1:
+                item['start']=str(position).split("-")[0]
+                item['end']=str(position).split("-")[1]
+            item['info']=info.xpath("span[1]//a[1]/text()").extract_first()
+            item['no']=info.xpath("span[1]//a[2]/text()").extract_first()
+            item['start_time']=info.xpath("span[2]/text()").extract_first().strip()
+            item['start_position']=info.xpath("span[4]/text()").extract_first()
+            item['end_time']=info.xpath("span[5]/text()").extract_first().strip()
+            item['end_position']=info.xpath("span[7]/text()").extract_first()
+            item['status']=info.xpath("span[9]/text()").extract_first()
+            yield item
 
 if __name__ == '__main__':
     from scrapy import cmdline

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
 import os
 import time
 
 import scrapy
-from compass.items import WeatherItem, CompassItem
+
+from compass.items import CompassItem
 
 
 class PriceIndexSpider(scrapy.Spider):
@@ -12,7 +12,7 @@ class PriceIndexSpider(scrapy.Spider):
     start_urls = [
         'http://www.100ppi.com/cindex/',
     ]
-    data_path=os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
 
     custom_settings = {
         'ITEM_PIPELINES': {
@@ -25,19 +25,13 @@ class PriceIndexSpider(scrapy.Spider):
             url = str(type_url.xpath("@href").extract_first())
             n = str(type_url.xpath("text()").extract_first()).strip()
             # print(response.urljoin(url))
-            yield scrapy.Request(url=response.urljoin(url), meta={"name":n},callback=self.parse_price)
+            yield scrapy.Request(url=response.urljoin(url), meta={"name": n}, callback=self.parse_price)
 
     def parse_price(self, response):
-
-        li=response.xpath('//div[@class="left2"]//td/text()').extract()
-        n=response.meta['name']
-        v=li[len(li)-1]
-        yield self.parse_data(n,v)
-
-    def parse_data(self,n,v):
+        v = response.xpath('//div[@class="left2"]//tr[2]/td[last()]/text()').extract_first()
         item = CompassItem()
-        item["info"] = {"name":n,"value":v}
-        return item
+        item["info"] = {"name": response.meta['name'], "value": v}
+        yield item
 
 
 if __name__ == '__main__':
