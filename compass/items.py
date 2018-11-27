@@ -10,7 +10,7 @@ import scrapy
 
 class CompassItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    info = scrapy.Field()
     pass
 
 
@@ -30,3 +30,21 @@ class WeatherItem(scrapy.Item):
     date_info = scrapy.Field()
 
     # pass
+class AreaItem(scrapy.Item):
+    # define the fields for your item here like:
+    id = scrapy.Field()
+    name = scrapy.Field()
+    province_id = scrapy.Field()
+    province_name = scrapy.Field()
+    city_id = scrapy.Field()
+    city_name = scrapy.Field()
+
+class PriceItem(scrapy.Item):
+    # define the fields for your item here like:
+    t_name=scrapy.Field()
+    name=scrapy.Field()
+
+    price_type=scrapy.Field()
+    price=scrapy.Field()
+    price_reportime=scrapy.Field()
+    company=scrapy.Field()

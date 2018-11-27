@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import time
+
 import scrapy
 from compass.items import WeatherItem
 
@@ -8,6 +11,7 @@ class WeatherSpider(scrapy.Spider):
     start_urls = [
         'https://www.tianqi.com/chinacity.html',
     ]
+    data_path=os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
     custom_settings = {
         'ITEM_PIPELINES': {
             'compass.pipelines.JsonLinesExporterPipeline': 1
