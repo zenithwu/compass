@@ -13,7 +13,7 @@ class WeatherSpider(scrapy.Spider):
     start_urls = [
         'https://restapi.amap.com/v3/config/district?key=19ca317cf68842316570c533f108ba0a&subdistrict=3',
     ]
-    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/")
     weather_url = 'https://restapi.amap.com/v3/weather/weatherInfo?key=19ca317cf68842316570c533f108ba0a&extensions=all&city='
     custom_settings = {
         'ITEM_PIPELINES': {

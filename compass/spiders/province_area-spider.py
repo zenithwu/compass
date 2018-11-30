@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 
 import scrapy
 
@@ -17,7 +16,7 @@ class ProvinceCitySpider(scrapy.Spider):
             'compass.pipelines.JsonLinesExporterPipeline': 1
         }
     }
-    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/")
 
     def parse(self, response):
         for type_url in response.xpath('//tr[@class="provincetr"]/td/a'):

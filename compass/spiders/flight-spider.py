@@ -12,7 +12,7 @@ class FlightSpider(scrapy.Spider):
     start_urls = [
         'http://www.variflight.com/sitemap/flight?AE71649A58c77=',
     ]
-    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/")
 
     custom_settings = {
         'ITEM_PIPELINES': {

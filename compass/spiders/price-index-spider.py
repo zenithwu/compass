@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 
 import scrapy
 
@@ -12,7 +11,7 @@ class PriceIndexSpider(scrapy.Spider):
     start_urls = [
         'http://www.100ppi.com/cindex/',
     ]
-    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/")
 
     custom_settings = {
         'ITEM_PIPELINES': {

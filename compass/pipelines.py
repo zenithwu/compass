@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import time
 
 from scrapy.exporters import JsonItemExporter
 # Define your item pipelines here
@@ -14,13 +15,13 @@ from scrapy.exporters import JsonLinesItemExporter
 class JsonLinesExporterPipeline:
     file = None
     exporter = None
-
+    now=time.strftime('%Y%m%d', time.localtime())
     def open_spider(self, spider):
         # 初始化 exporter 实例，执行输出的文件和编码
         data_path =spider.data_path
         if not os.path.exists(data_path):
             os.makedirs(data_path)
-        self.file = open(os.path.join(data_path, spider.name + '.json'), 'wb')
+        self.file = open(os.path.join(data_path, spider.name+self.now + '.json'), 'wb')
         self.exporter = JsonLinesItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
 
     def close_spider(self, spider):
@@ -33,12 +34,13 @@ class JsonLinesExporterPipeline:
 
 
 class JsonExporterPipeline:
+    now=time.strftime('%Y%m%d', time.localtime())
     # 调用 scrapy 提供的 json exporter 导出 json 文件
     def open_spider(self, spider):
         data_path =spider.data_path
         if not os.path.exists(data_path):
             os.makedirs(data_path)
-        self.file = open(os.path.join(data_path, spider.name + '.json'), 'wb')
+        self.file = open(os.path.join(data_path, spider.name+self.now + '.json'), 'wb')
         self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
         self.exporter.start_exporting()
 

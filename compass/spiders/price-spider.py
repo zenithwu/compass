@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 
 import scrapy
+from scrapy import Selector
 
 from compass.items import PriceItem
-from scrapy import Selector
 
 
 class PriceSpider(scrapy.Spider):
@@ -13,7 +12,7 @@ class PriceSpider(scrapy.Spider):
     start_urls = [
         'http://www.100ppi.com/ppi/',
     ]
-    data_path = os.path.join("../data/", time.strftime('%Y-%m-%d', time.localtime()))
+    data_path = os.path.join("../data/")
 
     custom_settings = {
         'ITEM_PIPELINES': {
